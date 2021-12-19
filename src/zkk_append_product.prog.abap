@@ -5,34 +5,35 @@
 *&---------------------------------------------------------------------*
 REPORT zkk_append_product.
 
-SELECT productid FROM zkk_products INTO @DATA(p_pid). "Fetch Product ID form table Products
+SELECT productid FROM zkk_products INTO @DATA(pa_pid). "Fetch Product ID form table Products
 ENDSELECT.
 
 *WRITE: 'Product ID: ' COLOR COL_POSITIVE,
 *       p_pid COLOR COL_POSITIVE.
 
-ADD 1 TO p_pid. "Add 1 to Product ID
+ADD 1 TO pa_pid. "Add 1 to Product ID
 
-PARAMETERS: p_name type zkk_products-sproductname,
-            p_sid  type zkk_products-ssupplierid,
-            s_cid  type zkk_products-scategoryid,
-            s_qpu  type zkk_products-squaperunit,
-            s_up   type zkk_products-sunitprice,
-            s_uon   type zkk_products-sunitsonorder,
-            s_rl    type zkk_products-sreorderlevel,
-            s_dis   type zkk_products-sdiscontinued.
+PARAMETERS: pa_name TYPE zkk_products-sproductname,
+            pa_sid  TYPE zkk_products-ssupplierid,
+            pa_cid  TYPE zkk_products-scategoryid,
+            pa_qpu  TYPE zkk_products-squaperunit,
+            pa_up   TYPE zkk_products-sunitprice,
+            pa_uon  TYPE zkk_products-sunitsonorder,
+            pa_rl   TYPE zkk_products-sreorderlevel,
+            pa_dis  TYPE zkk_products-sdiscontinued.
 
-DATA: ls_products TYPE zkk_str_products,
-      lt_products TYPE zkk_tt_products.
+DATA: lt_products TYPE zkk_tt_products.
 
-ls_products = value #( productid = p_pid sproductname = p_name ssupplierid = p_sid scategoryid = s_cid squaperunit = s_qpu sunitprice = s_up sunitsonorder = s_uon sreorderlevel = s_rl sdiscontinued = s_dis ).
+APPEND VALUE #( productid = pa_pid sproductname = pa_name ssupplierid = pa_sid scategoryid = pa_cid squaperunit = pa_qpu sunitprice = pa_up sunitsonorder = pa_uon sreorderlevel = pa_rl sdiscontinued = pa_dis )
+TO lt_products.
 
-APPEND ls_products to lt_products.
+*INSERT INTO scarr VALUES @scarr_wa.
+*APPEND ls_products TO lt_products.
 
-MODIFY zkk_products from table lt_products.
-
+MODIFY zkk_products FROM TABLE lt_products.
+*DELETE
 IF sy-subrc = 0.
-    MESSAGE 'Insert OK' TYPE 'S'.
-   ELSE.
-   MESSAGE 'Error during insert' TYPE 'E'.
+  MESSAGE 'Insert OK' TYPE 'S'.
+ELSE.
+  MESSAGE 'Error during insert' TYPE 'E'.
 ENDIF.
