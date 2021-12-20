@@ -18,51 +18,59 @@
     </item>
     <item>
      <ID>S</ID>
-     <KEY>P_NAME</KEY>
-     <ENTRY>Product name DE</ENTRY>
-     <LENGTH>23</LENGTH>
+     <KEY>PA_CID</KEY>
+     <ENTRY>.</ENTRY>
+     <LENGTH>9</LENGTH>
+     <SPLIT>D</SPLIT>
     </item>
     <item>
      <ID>S</ID>
-     <KEY>P_SID</KEY>
-     <ENTRY>Supplier id DE</ENTRY>
-     <LENGTH>22</LENGTH>
+     <KEY>PA_DIS</KEY>
+     <ENTRY>.</ENTRY>
+     <LENGTH>9</LENGTH>
+     <SPLIT>D</SPLIT>
     </item>
     <item>
      <ID>S</ID>
-     <KEY>S_CID</KEY>
-     <ENTRY>Category ID DE</ENTRY>
-     <LENGTH>22</LENGTH>
+     <KEY>PA_NAME</KEY>
+     <ENTRY>.</ENTRY>
+     <LENGTH>9</LENGTH>
+     <SPLIT>D</SPLIT>
     </item>
     <item>
      <ID>S</ID>
-     <KEY>S_DIS</KEY>
-     <ENTRY>Discontinued DE</ENTRY>
-     <LENGTH>23</LENGTH>
+     <KEY>PA_QPU</KEY>
+     <ENTRY>.</ENTRY>
+     <LENGTH>9</LENGTH>
+     <SPLIT>D</SPLIT>
     </item>
     <item>
      <ID>S</ID>
-     <KEY>S_QPU</KEY>
-     <ENTRY>Queantity per unit DE</ENTRY>
-     <LENGTH>29</LENGTH>
+     <KEY>PA_RL</KEY>
+     <ENTRY>.</ENTRY>
+     <LENGTH>9</LENGTH>
+     <SPLIT>D</SPLIT>
     </item>
     <item>
      <ID>S</ID>
-     <KEY>S_RL</KEY>
-     <ENTRY>Reorder level DE</ENTRY>
-     <LENGTH>24</LENGTH>
+     <KEY>PA_SID</KEY>
+     <ENTRY>.</ENTRY>
+     <LENGTH>9</LENGTH>
+     <SPLIT>D</SPLIT>
     </item>
     <item>
      <ID>S</ID>
-     <KEY>S_UON</KEY>
-     <ENTRY>Unit on order DE</ENTRY>
-     <LENGTH>24</LENGTH>
+     <KEY>PA_UON</KEY>
+     <ENTRY>.</ENTRY>
+     <LENGTH>9</LENGTH>
+     <SPLIT>D</SPLIT>
     </item>
     <item>
      <ID>S</ID>
-     <KEY>S_UP</KEY>
-     <ENTRY>Unit price DE</ENTRY>
-     <LENGTH>21</LENGTH>
+     <KEY>PA_UP</KEY>
+     <ENTRY>.</ENTRY>
+     <LENGTH>9</LENGTH>
+     <SPLIT>D</SPLIT>
     </item>
    </TPOOL>
   </asx:values>
