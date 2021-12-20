@@ -15,7 +15,7 @@ ADD 1 TO pa_pid. "Add 1 to Product ID
 
 PARAMETERS: pa_name TYPE zkk_products-sproductname,
             pa_sid  TYPE zkk_products-ssupplierid,
-            pa_cid  TYPE zkk_products-scategoryid,
+            pa_cid(10) MATCHCODE OBJECT ZKK_HLP_CATEGORYID,
             pa_qpu  TYPE zkk_products-squaperunit,
             pa_up   TYPE zkk_products-sunitprice,
             pa_uon  TYPE zkk_products-sunitsonorder,
