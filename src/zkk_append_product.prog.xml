@@ -53,9 +53,8 @@
     <item>
      <ID>S</ID>
      <KEY>PA_SID</KEY>
-     <ENTRY>.</ENTRY>
-     <LENGTH>9</LENGTH>
-     <SPLIT>D</SPLIT>
+     <ENTRY>Supplier id</ENTRY>
+     <LENGTH>19</LENGTH>
     </item>
     <item>
      <ID>S</ID>
