@@ -5,16 +5,6 @@
 *&---------------------------------------------------------------------*
 REPORT zkk_avl_products.
 
-CALL FUNCTION 'ENQUEUE_EZKK_LO_PRODUCTS'
-  EXCEPTIONS
-    foreign_lock   = 1                " Object already locked
-    system_failure = 2                " Internal error from enqueue server
-    OTHERS         = 3.
-IF sy-subrc <> 0.
-  MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
-    WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
-ENDIF.
-
 DATA(lt_fieldcat) = VALUE slis_t_fieldcat_alv(
                                              ( fieldname = 'PRODUCTID' key = abap_true )
                                              ( fieldname = 'Sproductname' edit = abap_true )
@@ -57,7 +47,30 @@ sel TYPE slis_selfield.
   CASE sy-ucomm.
     WHEN '&DATA_SAVE'.
 
+      LOOP AT lt_products INTO DATA(ls_products).
+
+        CALL FUNCTION 'ENQUEUE_EZKK_LO_PRODUCTS'
+          EXPORTING
+            mode_zkk_products = 'X'
+            productid         = ls_products-productid
+          EXCEPTIONS
+            foreign_lock      = 1                " Object already locked
+            system_failure    = 2                " Internal error from enqueue server
+            OTHERS            = 3.
+        IF sy-subrc <> 0.
+          MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
+            WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
+        ENDIF.
+
+      ENDLOOP.
+
       MODIFY zkk_products FROM TABLE lt_products.
+
+      IF sy-subrc = 0.
+        MESSAGE 'Seved' TYPE 'S'.
+      ELSE.
+        MESSAGE 'Error during insert' TYPE 'E'.
+      ENDIF.
   ENDCASE.
 
 ENDFORM.
