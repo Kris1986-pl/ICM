@@ -69,7 +69,7 @@ sel TYPE slis_selfield.
       IF sy-subrc = 0.
         MESSAGE 'Seved' TYPE 'S'.
       ELSE.
-        MESSAGE 'Error during insert' TYPE 'E'.
+        MESSAGE 'Error during save' TYPE 'E'.
       ENDIF.
   ENDCASE.
 
