@@ -17,8 +17,8 @@ FUNCTION ZKK_ADD_PRODUCT.
 
   APPEND VALUE #( productid = iv_productid
                   sproductname = iv_productname
-                  ssupplierid = IV_SUPPLIERDID
-                  scategoryid = IV_CATEGORYID
+                  ssupplierid = iv_supplierdid
+                  scategoryid = iv_categoryid
                   squaperunit = iv_quantityperunit
                   sunitprice = iv_unitprice
                   sunitsonorder = iv_unitonorder
