@@ -11,7 +11,7 @@ DATA(lt_fieldcat) = VALUE slis_t_fieldcat_alv(
                                              ( fieldname = 'SSUPPLIERID' edit = abap_true )
                                              ( fieldname = 'SCATEGORYID' edit = abap_true )
                                              ( fieldname = 'SQUANTITY_PER_UNIT' edit = abap_true )
-                                             ( fieldname = 'SUNITPRICE' edit = abap_true )
+                                              ( fieldname = 'SUNITPRICE' edit = abap_true datatype = 'DEC' decimals_out = '2' )
                                              ( fieldname = 'sunitsonorder' edit = abap_true )
                                              ( fieldname = 'SREORDERLEVEL' edit = abap_true )
                                              ( fieldname = 'SDISCONTINUED' edit = abap_true )
