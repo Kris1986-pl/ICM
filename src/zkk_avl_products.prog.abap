@@ -6,11 +6,11 @@
 REPORT zkk_avl_products.
 
 DATA(lt_fieldcat) = VALUE slis_t_fieldcat_alv(
-                                             ( fieldname = 'PRODUCTID' key = abap_true )
+                                             ( fieldname = 'PRODUCTID' )
                                              ( fieldname = 'Sproductname' edit = abap_true )
                                              ( fieldname = 'SSUPPLIERID' edit = abap_true )
                                              ( fieldname = 'SCATEGORYID' edit = abap_true )
-                                             ( fieldname = 'SQUANTITY_PER_UNIT' edit = abap_true )
+                                             ( fieldname = 'SQUAPERUNIT' edit = abap_true )
                                               ( fieldname = 'SUNITPRICE' edit = abap_true datatype = 'DEC' decimals_out = '2' )
                                              ( fieldname = 'sunitsonorder' edit = abap_true )
                                              ( fieldname = 'SREORDERLEVEL' edit = abap_true )
