@@ -22,8 +22,15 @@ MODULE status_0100 OUTPUT.
 * SET TITLEBAR 'xxx'.
 
   TYPES:BEGIN OF ty_table,
-          sproductname TYPE zkk_products-sproductname,
-          celltab      TYPE lvc_t_styl.
+          sproductname  TYPE zkk_products-sproductname,
+          ssupplierid   TYPE zkk_products-ssupplierid,
+          scategoryid   TYPE zkk_products-scategoryid,
+          squaperunit   TYPE zkk_products-squaperunit,
+          sunitprice    TYPE zkk_products-sunitprice,
+          sunitsonorder TYPE zkk_products-sunitsonorder,
+          sreorderlevel TYPE zkk_products-sreorderlevel,
+          sdiscontinued TYPE zkk_products-sdiscontinued,
+          celltab       TYPE lvc_t_styl.
   TYPES:END OF ty_table.
 
   DATA: ls_table  TYPE ty_table,
@@ -52,20 +59,26 @@ MODULE status_0100 OUTPUT.
     LOOP AT lt_products REFERENCE INTO DATA(lr_products).
       ls_table = CORRESPONDING #( lr_products->* ).
 
-      APPEND VALUE #( fieldname = 'Sproductname' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
+*      APPEND VALUE #( fieldname = 'SPRODUCTNAME' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
+*      APPEND VALUE #( fieldname = 'SSUPPLIERID' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
+*      APPEND VALUE #( fieldname = 'SCATEGORYID' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
+      APPEND VALUE #( fieldname = 'SQUAPERUNIT' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
+      APPEND VALUE #( fieldname = 'SUNITPRICE' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
+      APPEND VALUE #( fieldname = 'SUNITSOMORDER' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
+*      APPEND VALUE #( fieldname = 'SREORDERLEVEL' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
+*      APPEND VALUE #( fieldname = 'SDISCONTINUED' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
 
       APPEND ls_table TO lt_table.
 
     ENDLOOP.
 
     DATA(lt_fieldcat) = VALUE lvc_t_fcat(
-                                        ( fieldname = 'Sproductname' edit = abap_true )
+                                        ( fieldname = 'SPRODUCTNAME' edit = abap_true )
                                         ( fieldname = 'SSUPPLIERID' edit = abap_true )
                                         ( fieldname = 'SCATEGORYID' edit = abap_true )
                                         ( fieldname = 'SQUAPERUNIT' edit = abap_true )
                                         ( fieldname = 'SUNITPRICE' edit = abap_true )
-*                                        ( fieldname = 'SUNITPRICE' edit = abap_true datatype = 'DEC' decimals_out = '2' )
-                                        ( fieldname = 'sunitsonorder' edit = abap_true )
+                                        ( fieldname = 'SUNITSONORDER' edit = abap_true )
                                         ( fieldname = 'SREORDERLEVEL' edit = abap_true )
                                         ( fieldname = 'SDISCONTINUED' edit = abap_true )
                                         ).
