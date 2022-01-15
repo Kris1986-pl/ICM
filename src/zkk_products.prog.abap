@@ -59,14 +59,16 @@ MODULE status_0100 OUTPUT.
     LOOP AT lt_products REFERENCE INTO DATA(lr_products).
       ls_table = CORRESPONDING #( lr_products->* ).
 
-*      APPEND VALUE #( fieldname = 'SPRODUCTNAME' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
-*      APPEND VALUE #( fieldname = 'SSUPPLIERID' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
-*      APPEND VALUE #( fieldname = 'SCATEGORYID' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
+
+      APPEND VALUE #( fieldname = 'SCATEGORYID' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
+      APPEND VALUE #( fieldname = 'SDISCONTINUED' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
+      APPEND VALUE #( fieldname = 'SPRODUCTNAME' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
       APPEND VALUE #( fieldname = 'SQUAPERUNIT' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
+      APPEND VALUE #( fieldname = 'SREORDERLEVEL' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
+      APPEND VALUE #( fieldname = 'SSUPPLIERID' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
       APPEND VALUE #( fieldname = 'SUNITPRICE' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
-      APPEND VALUE #( fieldname = 'SUNITSOMORDER' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
-*      APPEND VALUE #( fieldname = 'SREORDERLEVEL' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
-*      APPEND VALUE #( fieldname = 'SDISCONTINUED' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
+      APPEND VALUE #( fieldname = 'SUNITSONORDER' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
+
 
       APPEND ls_table TO lt_table.
 
