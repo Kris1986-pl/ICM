@@ -22,16 +22,16 @@ MODULE status_0100 OUTPUT.
 * SET TITLEBAR 'xxx'.
 
   TYPES:BEGIN OF ty_table,
-          sproductname  TYPE zkk_products-sproductname,
-          ssupplierid   TYPE zkk_products-ssupplierid,
-          scategoryid   TYPE zkk_products-scategoryid,
-          squaperunit   TYPE zkk_products-squaperunit,
-          sunitprice    TYPE zkk_products-sunitprice,
-          sunitsonorder TYPE zkk_products-sunitsonorder,
-          sreorderlevel TYPE zkk_products-sreorderlevel,
-          sdiscontinued TYPE zkk_products-sdiscontinued,
+          sproductname       TYPE zkk_products-sproductname,
+          ssupplierid        TYPE zkk_products-ssupplierid,
+          scategoryid        TYPE zkk_products-scategoryid,
+          squaperunit        TYPE zkk_products-squaperunit,
+          sunitprice         TYPE zkk_products-sunitprice,
+          sunitsonorder      TYPE zkk_products-sunitsonorder,
+          sreorderlevel      TYPE zkk_products-sreorderlevel,
+          sdiscontinued      TYPE zkk_products-sdiscontinued,
           zkk_categoriesname TYPE zkk_categories-zkk_categoriesname,
-          celltab       TYPE lvc_t_styl.
+          celltab            TYPE lvc_t_styl.
   TYPES:END OF ty_table.
 
   DATA: ls_table  TYPE ty_table,
@@ -44,9 +44,9 @@ MODULE status_0100 OUTPUT.
 
     DATA(lr_alv) = NEW cl_gui_alv_grid( i_parent = lr_costom_container ).
 
-    SELECT SPRODUCTNAME, SCATEGORYID, SDISCONTINUED, SQUAPERUNIT, SREORDERLEVEL, SSUPPLIERID,
-    SUNITPRICE, SUNITSONORDER,  zkk_categoriesname FROM zkk_products
-    JOIN zkk_categories on zkk_products~scategoryid = zkk_categories~zkk_categoryid
+    SELECT sproductname, scategoryid, sdiscontinued, squaperunit, sreorderlevel, ssupplierid,
+    sunitprice, sunitsonorder,  zkk_categoriesname FROM zkk_products
+    JOIN zkk_categories ON zkk_products~scategoryid = zkk_categories~zkk_categoryid
     INTO TABLE @DATA(lt_products).
 
 *    SELECT * FROM zkk_categories
@@ -90,11 +90,18 @@ MODULE status_0100 OUTPUT.
                                         ( fieldname = 'SDISCONTINUED' edit = abap_true )
                                         ).
 
+    DATA(lt_dis_toolbar) = VALUE ui_functions(
+                                             ( cl_gui_alv_grid=>mc_fc_loc_delete_row )
+                                             ( cl_gui_alv_grid=>mc_fc_loc_insert_row )
+                                             ( cl_gui_alv_grid=>mc_fc_loc_copy_row )
+                                             ).
+
     ls_layout-stylefname = 'CELLTAB'.
 
     lr_alv->set_table_for_first_display(
       EXPORTING
         is_layout = ls_layout
+        it_toolbar_excluding = lt_dis_toolbar
       CHANGING
         it_outtab                     = lt_table               " Output Table
         it_fieldcatalog               = lt_fieldcat               " Field Catalog
