@@ -30,6 +30,7 @@ MODULE status_0100 OUTPUT.
           sunitsonorder TYPE zkk_products-sunitsonorder,
           sreorderlevel TYPE zkk_products-sreorderlevel,
           sdiscontinued TYPE zkk_products-sdiscontinued,
+          zkk_categoriesname TYPE zkk_categories-zkk_categoriesname,
           celltab       TYPE lvc_t_styl.
   TYPES:END OF ty_table.
 
@@ -43,18 +44,20 @@ MODULE status_0100 OUTPUT.
 
     DATA(lr_alv) = NEW cl_gui_alv_grid( i_parent = lr_costom_container ).
 
-    SELECT * FROM zkk_products
+    SELECT SPRODUCTNAME, SCATEGORYID, SDISCONTINUED, SQUAPERUNIT, SREORDERLEVEL, SSUPPLIERID,
+    SUNITPRICE, SUNITSONORDER,  zkk_categoriesname FROM zkk_products
+    JOIN zkk_categories on zkk_products~scategoryid = zkk_categories~zkk_categoryid
     INTO TABLE @DATA(lt_products).
 
-    SELECT * FROM zkk_categories
-    FOR ALL ENTRIES IN @lt_products
-    WHERE zkk_categoryid = @lt_products-scategoryid
-    INTO TABLE @DATA(lt_categories).
-
-    SELECT * FROM zkk_suppliers
-    FOR ALL ENTRIES IN @lt_products
-    WHERE zkk_supplierid = @lt_products-ssupplierid
-    INTO TABLE @DATA(lt_suppliers).
+*    SELECT * FROM zkk_categories
+*    FOR ALL ENTRIES IN @lt_products
+*    WHERE zkk_categoryid = @lt_products-scategoryid
+*    INTO TABLE @DATA(lt_categories).
+*
+*    SELECT * FROM zkk_suppliers
+*    FOR ALL ENTRIES IN @lt_products
+*    WHERE zkk_supplierid = @lt_products-ssupplierid
+*    INTO TABLE @DATA(lt_suppliers).
 
     LOOP AT lt_products REFERENCE INTO DATA(lr_products).
       ls_table = CORRESPONDING #( lr_products->* ).
@@ -68,6 +71,7 @@ MODULE status_0100 OUTPUT.
       APPEND VALUE #( fieldname = 'SSUPPLIERID' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
       APPEND VALUE #( fieldname = 'SUNITPRICE' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
       APPEND VALUE #( fieldname = 'SUNITSONORDER' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
+      APPEND VALUE #( fieldname = 'zkk_categoriesname' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
 
 
       APPEND ls_table TO lt_table.
@@ -75,9 +79,10 @@ MODULE status_0100 OUTPUT.
     ENDLOOP.
 
     DATA(lt_fieldcat) = VALUE lvc_t_fcat(
-                                        ( fieldname = 'SPRODUCTNAME' edit = abap_true )
-                                        ( fieldname = 'SSUPPLIERID' edit = abap_true )
+                                        ( fieldname = 'SPRODUCTNAME' edit = abap_true ref_table = 'zkk_products' )
                                         ( fieldname = 'SCATEGORYID' edit = abap_true )
+                                        ( fieldname = 'zkk_categoriesname' edit = abap_true coltext = 'Categorie Name' )
+                                        ( fieldname = 'SSUPPLIERID' edit = abap_true )
                                         ( fieldname = 'SQUAPERUNIT' edit = abap_true )
                                         ( fieldname = 'SUNITPRICE' edit = abap_true )
                                         ( fieldname = 'SUNITSONORDER' edit = abap_true )
