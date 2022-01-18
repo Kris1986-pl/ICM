@@ -71,7 +71,7 @@ CLASS lcl_event_handler IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD get_inserted_rows.
-    gt_inserted_rows = me->gt_inserted_rows.
+    et_inserted_rows = me->gt_inserted_rows.
   ENDMETHOD.
 
 ENDCLASS.
@@ -211,7 +211,6 @@ MODULE user_command_0100 INPUT.
 BREAK-POINT.
         lr_event_handler->get_inserted_rows(
             IMPORTING
-
                 et_inserted_rows = DATA(lt_inserted_rows)
         ).
 
