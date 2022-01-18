@@ -5,9 +5,80 @@
 *&---------------------------------------------------------------------*
 REPORT zkk_products.
 
+TYPES:BEGIN OF ty_table,
+        sproductname       TYPE zkk_products-sproductname,
+        ssupplierid        TYPE zkk_products-ssupplierid,
+        scategoryid        TYPE zkk_products-scategoryid,
+        squaperunit        TYPE zkk_products-squaperunit,
+        sunitprice         TYPE zkk_products-sunitprice,
+        sunitsonorder      TYPE zkk_products-sunitsonorder,
+        sreorderlevel      TYPE zkk_products-sreorderlevel,
+        sdiscontinued      TYPE zkk_products-sdiscontinued,
+        zkk_categoriesname TYPE zkk_categories-zkk_categoriesname,
+        celltab            TYPE lvc_t_styl.
+TYPES:END OF ty_table.
+
+TYPES: ty_tab_products TYPE STANDARD TABLE OF zkk_products.
+
 DATA lr_costom_container TYPE REF TO cl_gui_custom_container.
 
-CALL SCREEN 100.
+CLASS lcl_event_handler DEFINITION.
+
+  PUBLIC SECTION.
+    METHODS handle_data_changed
+                FOR EVENT data_changed OF cl_gui_alv_grid
+      IMPORTING er_data_changed.
+
+    METHODS get_inserted_rows
+      EXPORTING et_inserted_rows TYPE ty_tab_products.
+
+  PROTECTED SECTION.
+  PRIVATE SECTION.
+
+    DATA gt_inserted_rows TYPE ty_tab_products.
+
+ENDCLASS.
+
+CLASS lcl_event_handler IMPLEMENTATION.
+
+  METHOD handle_data_changed.
+
+    DATA ls_inserted_rows TYPE zkk_products.
+
+    FIELD-SYMBOLS: <lt_table> TYPE STANDARD TABLE,
+                   <ls_row>   TYPE ty_table.
+
+    SELECT * FROM zkk_categories INTO TABLE @DATA(lt_categories).
+*    select * from zkk_suppliers into table @data(lt_suppliers).
+
+    ASSIGN er_data_changed->mp_mod_rows->* TO <lt_table>.
+
+    LOOP AT <lt_table> ASSIGNING <ls_row>.
+
+      READ TABLE lt_categories WITH KEY zkk_categoryid = <ls_row>-scategoryid REFERENCE INTO
+      DATA(lr_categories).
+
+
+      IF sy-subrc = 0.
+        <ls_row>-zkk_categoriesname = lr_categories->zkk_categoriesname.
+      ENDIF.
+
+      ls_inserted_rows = CORRESPONDING #( <ls_row> ).
+      APPEND ls_inserted_rows TO gt_inserted_rows.
+
+    ENDLOOP.
+
+  ENDMETHOD.
+
+  METHOD get_inserted_rows.
+    gt_inserted_rows = me->gt_inserted_rows.
+  ENDMETHOD.
+
+ENDCLASS.
+
+START-OF-SELECTION.
+
+  CALL SCREEN 100.
 
 
 
@@ -21,22 +92,14 @@ MODULE status_0100 OUTPUT.
   SET PF-STATUS 'PRODUCTS_STATUS'.
 * SET TITLEBAR 'xxx'.
 
-  TYPES:BEGIN OF ty_table,
-          sproductname       TYPE zkk_products-sproductname,
-          ssupplierid        TYPE zkk_products-ssupplierid,
-          scategoryid        TYPE zkk_products-scategoryid,
-          squaperunit        TYPE zkk_products-squaperunit,
-          sunitprice         TYPE zkk_products-sunitprice,
-          sunitsonorder      TYPE zkk_products-sunitsonorder,
-          sreorderlevel      TYPE zkk_products-sreorderlevel,
-          sdiscontinued      TYPE zkk_products-sdiscontinued,
-          zkk_categoriesname TYPE zkk_categories-zkk_categoriesname,
-          celltab            TYPE lvc_t_styl.
-  TYPES:END OF ty_table.
 
-  DATA: ls_table  TYPE ty_table,
-        lt_table  TYPE STANDARD TABLE OF ty_table,
-        ls_layout TYPE lvc_s_layo.
+
+  DATA: ls_table         TYPE ty_table,
+        lt_table         TYPE STANDARD TABLE OF ty_table,
+        ls_layout        TYPE lvc_s_layo,
+        lr_event_handler TYPE REF TO lcl_event_handler.
+
+  lr_event_handler = NEW #(  ).
 
   IF lr_costom_container IS NOT BOUND.
 
@@ -79,7 +142,7 @@ MODULE status_0100 OUTPUT.
     ENDLOOP.
 
     DATA(lt_fieldcat) = VALUE lvc_t_fcat(
-                                        ( fieldname = 'SPRODUCTNAME' edit = abap_true ref_table = 'zkk_products' )
+                                        ( fieldname = 'SPRODUCTNAME' edit = abap_true ref_table = 'ZKK_PRODUCTS' )
                                         ( fieldname = 'SCATEGORYID' edit = abap_true )
                                         ( fieldname = 'zkk_categoriesname' edit = abap_true coltext = 'Categorie Name' )
                                         ( fieldname = 'SSUPPLIERID' edit = abap_true )
@@ -93,18 +156,20 @@ MODULE status_0100 OUTPUT.
     DATA(lt_dis_toolbar) = VALUE ui_functions(
                                              ( cl_gui_alv_grid=>mc_fc_loc_delete_row )
                                              ( cl_gui_alv_grid=>mc_fc_loc_insert_row )
-                                             ( cl_gui_alv_grid=>mc_fc_loc_copy_row )
+*                                             ( cl_gui_alv_grid=>mc_fc_loc_copy_row )
                                              ).
 
     ls_layout-stylefname = 'CELLTAB'.
+
+    SET HANDLER lr_event_handler->handle_data_changed FOR lr_alv.
 
     lr_alv->set_table_for_first_display(
       EXPORTING
         is_layout = ls_layout
         it_toolbar_excluding = lt_dis_toolbar
       CHANGING
-        it_outtab                     = lt_table               " Output Table
-        it_fieldcatalog               = lt_fieldcat               " Field Catalog
+        it_outtab                     = lt_table         " Output Table
+        it_fieldcatalog               = lt_fieldcat      " Field Catalog
       EXCEPTIONS
         invalid_parameter_combination = 1                " Wrong Parameter
         program_error                 = 2                " Program Errors
@@ -134,6 +199,33 @@ MODULE user_command_0100 INPUT.
 
     WHEN 'BACK'.
       SET SCREEN 0.
+
+    WHEN 'SAVE'.
+      lr_alv->check_changed_data(
+        IMPORTING
+          e_valid   = DATA(lv_valid)                 " Entries are Consistent
+        ).
+
+      IF lv_valid IS NOT INITIAL.
+        SELECT MAX( productid ) FROM zkk_products INTO @DATA(lv_max_productid).
+BREAK-POINT.
+        lr_event_handler->get_inserted_rows(
+            IMPORTING
+
+                et_inserted_rows = DATA(lt_inserted_rows)
+        ).
+
+        LOOP AT lt_inserted_rows REFERENCE INTO DATA(lr_inserted_rows).
+            lv_max_productid = lv_max_productid + 1.
+
+            lr_inserted_rows->productid = lv_max_productid.
+
+        ENDLOOP.
+
+        MODIFY zkk_products from TABLE lt_inserted_rows.
+
+
+      ENDIF.
   ENDCASE.
 
 ENDMODULE.
