@@ -10,6 +10,10 @@
     <SCRLEN2>20</SCRLEN2>
     <SCRLEN3>40</SCRLEN3>
     <DDTEXT>Reorder level</DDTEXT>
+    <REPTEXT>Reorder Level</REPTEXT>
+    <SCRTEXT_S>ReorderLev</SCRTEXT_S>
+    <SCRTEXT_M>Reorder Level</SCRTEXT_M>
+    <SCRTEXT_L>Reorder Level</SCRTEXT_L>
     <DTELMASTER>E</DTELMASTER>
     <DATATYPE>INT2</DATATYPE>
     <LENG>000005</LENG>

@@ -132,7 +132,7 @@ MODULE status_0100 OUTPUT.
       APPEND VALUE #( fieldname = 'SQUAPERUNIT' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
       APPEND VALUE #( fieldname = 'SREORDERLEVEL' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
       APPEND VALUE #( fieldname = 'SSUPPLIERID' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
-      APPEND VALUE #( fieldname = 'SUNITPRICE' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
+*      APPEND VALUE #( fieldname = 'SUNITPRICE' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.!
       APPEND VALUE #( fieldname = 'SUNITSONORDER' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
       APPEND VALUE #( fieldname = 'zkk_categoriesname' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
 
@@ -143,14 +143,14 @@ MODULE status_0100 OUTPUT.
 
     DATA(lt_fieldcat) = VALUE lvc_t_fcat(
                                         ( fieldname = 'SPRODUCTNAME' edit = abap_true ref_table = 'ZKK_PRODUCTS' )
-                                        ( fieldname = 'SCATEGORYID' edit = abap_true )
-                                        ( fieldname = 'zkk_categoriesname' edit = abap_true coltext = 'Categorie Name' )
-                                        ( fieldname = 'SSUPPLIERID' edit = abap_true )
-                                        ( fieldname = 'SQUAPERUNIT' edit = abap_true )
-                                        ( fieldname = 'SUNITPRICE' edit = abap_true )
-                                        ( fieldname = 'SUNITSONORDER' edit = abap_true )
-                                        ( fieldname = 'SREORDERLEVEL' edit = abap_true )
-                                        ( fieldname = 'SDISCONTINUED' edit = abap_true )
+                                        ( fieldname = 'SCATEGORYID' edit = abap_true ref_table = 'ZKK_PRODUCTS' )
+                                        ( fieldname = 'zkk_categoriesname' edit = abap_true ref_table = 'ZKK_CATEGORIES' )
+                                        ( fieldname = 'SSUPPLIERID' edit = abap_true ref_table = 'ZKK_PRODUCTS' )
+                                        ( fieldname = 'SQUAPERUNIT' edit = abap_true ref_table = 'ZKK_PRODUCTS' )
+                                        ( fieldname = 'SUNITPRICE' edit = abap_true ref_table = 'ZKK_PRODUCTS' datatype = 'DEC' )
+                                        ( fieldname = 'SUNITSONORDER' edit = abap_true ref_table = 'ZKK_PRODUCTS' )
+                                        ( fieldname = 'SREORDERLEVEL' edit = abap_true ref_table = 'ZKK_PRODUCTS' )
+                                        ( fieldname = 'SDISCONTINUED' edit = abap_true ref_table = 'ZKK_PRODUCTS' )
                                         ).
 
     DATA(lt_dis_toolbar) = VALUE ui_functions(
@@ -208,7 +208,6 @@ MODULE user_command_0100 INPUT.
 
       IF lv_valid IS NOT INITIAL.
         SELECT MAX( productid ) FROM zkk_products INTO @DATA(lv_max_productid).
-BREAK-POINT.
         lr_event_handler->get_inserted_rows(
             IMPORTING
                 et_inserted_rows = DATA(lt_inserted_rows)

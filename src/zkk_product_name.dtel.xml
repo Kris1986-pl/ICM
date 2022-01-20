@@ -10,10 +10,10 @@
     <SCRLEN2>20</SCRLEN2>
     <SCRLEN3>40</SCRLEN3>
     <DDTEXT>Product name</DDTEXT>
-    <REPTEXT>test</REPTEXT>
-    <SCRTEXT_S>test</SCRTEXT_S>
-    <SCRTEXT_M>test</SCRTEXT_M>
-    <SCRTEXT_L>test</SCRTEXT_L>
+    <REPTEXT>Product name</REPTEXT>
+    <SCRTEXT_S>Product na</SCRTEXT_S>
+    <SCRTEXT_M>Product name</SCRTEXT_M>
+    <SCRTEXT_L>Product name</SCRTEXT_L>
     <DTELMASTER>E</DTELMASTER>
     <DATATYPE>CHAR</DATATYPE>
     <LENG>000050</LENG>
