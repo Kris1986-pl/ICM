@@ -6,6 +6,7 @@
 REPORT zkk_products.
 
 TYPES:BEGIN OF ty_table,
+        productid          TYPE zkk_products-productid,
         sproductname       TYPE zkk_products-sproductname,
         ssupplierid        TYPE zkk_products-ssupplierid,
         scategoryid        TYPE zkk_products-scategoryid,
@@ -37,6 +38,10 @@ CLASS lcl_event_handler DEFINITION.
 
     DATA gt_inserted_rows TYPE ty_tab_products.
 
+    DATA: del_row TYPE lvc_s_moce.
+*          wa_obj  TYPE zpr_pkp_mgl,
+*          pspnr   TYPE zpr_guk_pos-pspnr.
+
 ENDCLASS.
 
 CLASS lcl_event_handler IMPLEMENTATION.
@@ -44,6 +49,7 @@ CLASS lcl_event_handler IMPLEMENTATION.
   METHOD handle_data_changed.
 
     DATA ls_inserted_rows TYPE zkk_products.
+    DATA: l_value TYPE zkk_products-productid.
 
     FIELD-SYMBOLS: <lt_table> TYPE STANDARD TABLE,
                    <ls_row>   TYPE ty_table.
@@ -52,6 +58,21 @@ CLASS lcl_event_handler IMPLEMENTATION.
 *    select * from zkk_suppliers into table @data(lt_suppliers).
 
     ASSIGN er_data_changed->mp_mod_rows->* TO <lt_table>.
+
+    BREAK-POINT.
+
+*    LOOP AT er_data_changed->mt_deleted_rows INTO del_row.
+*    ENDLOOP.
+    LOOP AT er_data_changed->mt_deleted_rows ASSIGNING FIELD-SYMBOL(<fs_deleted_row>).
+*      er_data_changed->get_cell_value(
+*        EXPORTING
+*          i_row_id = <fs_deleted_row>-row_id
+*          i_fieldname = 'ORT01'
+*        IMPORTING
+*          e_value = l_value
+*      ).
+      l_value = <fs_deleted_row>-row_id.
+    ENDLOOP.
 
     LOOP AT <lt_table> ASSIGNING <ls_row>.
 
@@ -107,7 +128,7 @@ MODULE status_0100 OUTPUT.
 
     DATA(lr_alv) = NEW cl_gui_alv_grid( i_parent = lr_costom_container ).
 
-    SELECT sproductname, scategoryid, sdiscontinued, squaperunit, sreorderlevel, ssupplierid,
+    SELECT productid, sproductname, scategoryid, sdiscontinued, squaperunit, sreorderlevel, ssupplierid,
     sunitprice, sunitsonorder,  zkk_categoriesname FROM zkk_products
     JOIN zkk_categories ON zkk_products~scategoryid = zkk_categories~zkk_categoryid
     INTO TABLE @DATA(lt_products).
@@ -134,7 +155,7 @@ MODULE status_0100 OUTPUT.
       APPEND VALUE #( fieldname = 'SSUPPLIERID' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
 *      APPEND VALUE #( fieldname = 'SUNITPRICE' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.!
       APPEND VALUE #( fieldname = 'SUNITSONORDER' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
-      APPEND VALUE #( fieldname = 'zkk_categoriesname' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
+      APPEND VALUE #( fieldname = 'ZKK_CATEGORIESNAME' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
 
 
       APPEND ls_table TO lt_table.
@@ -144,7 +165,7 @@ MODULE status_0100 OUTPUT.
     DATA(lt_fieldcat) = VALUE lvc_t_fcat(
                                         ( fieldname = 'SPRODUCTNAME' edit = abap_true ref_table = 'ZKK_PRODUCTS' )
                                         ( fieldname = 'SCATEGORYID' edit = abap_true ref_table = 'ZKK_PRODUCTS' )
-                                        ( fieldname = 'zkk_categoriesname' edit = abap_true ref_table = 'ZKK_CATEGORIES' )
+                                        ( fieldname = 'ZKK_CATEGORIESNAME' edit = abap_true ref_table = 'ZKK_CATEGORIES' )
                                         ( fieldname = 'SSUPPLIERID' edit = abap_true ref_table = 'ZKK_PRODUCTS' )
                                         ( fieldname = 'SQUAPERUNIT' edit = abap_true ref_table = 'ZKK_PRODUCTS' )
                                         ( fieldname = 'SUNITPRICE' edit = abap_true ref_table = 'ZKK_PRODUCTS' datatype = 'DEC' )
@@ -154,7 +175,7 @@ MODULE status_0100 OUTPUT.
                                         ).
 
     DATA(lt_dis_toolbar) = VALUE ui_functions(
-                                             ( cl_gui_alv_grid=>mc_fc_loc_delete_row )
+*                                             ( cl_gui_alv_grid=>mc_fc_loc_delete_row )
                                              ( cl_gui_alv_grid=>mc_fc_loc_insert_row )
 *                                             ( cl_gui_alv_grid=>mc_fc_loc_copy_row )
                                              ).
@@ -212,15 +233,15 @@ MODULE user_command_0100 INPUT.
             IMPORTING
                 et_inserted_rows = DATA(lt_inserted_rows)
         ).
-
+        BREAK-POINT.
         LOOP AT lt_inserted_rows REFERENCE INTO DATA(lr_inserted_rows).
+          IF lv_max_productid = 0.
             lv_max_productid = lv_max_productid + 1.
-
             lr_inserted_rows->productid = lv_max_productid.
-
+          ENDIF.
         ENDLOOP.
 
-        MODIFY zkk_products from TABLE lt_inserted_rows.
+        MODIFY zkk_products FROM TABLE lt_inserted_rows.
 
 
       ENDIF.
