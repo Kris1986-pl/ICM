@@ -21,7 +21,10 @@ TYPES:END OF ty_table.
 
 TYPES: ty_tab_products TYPE STANDARD TABLE OF zkk_products.
 
-DATA lr_costom_container TYPE REF TO cl_gui_custom_container.
+DATA: lr_costom_container TYPE REF TO cl_gui_custom_container,
+      gt_table            TYPE STANDARD TABLE OF ty_table.
+
+
 
 CLASS lcl_event_handler DEFINITION.
 
@@ -36,11 +39,16 @@ CLASS lcl_event_handler DEFINITION.
   PROTECTED SECTION.
   PRIVATE SECTION.
 
-    DATA gt_inserted_rows TYPE ty_tab_products.
+    DATA: gt_inserted_rows TYPE ty_tab_products,
+*          gt_table         TYPE STANDARD TABLE OF ty_table,
+          gt_deleted_rows  TYPE ty_tab_products.
 
-    DATA: del_row TYPE lvc_s_moce.
+*    DATA: del_row TYPE lvc_s_moce.
 *          wa_obj  TYPE zpr_pkp_mgl,
 *          pspnr   TYPE zpr_guk_pos-pspnr.
+
+*DATA: gt_table        TYPE STANDARD TABLE OF ty_table,
+*      gt_deleted_rows TYPE ty_tab_products.
 
 ENDCLASS.
 
@@ -49,7 +57,8 @@ CLASS lcl_event_handler IMPLEMENTATION.
   METHOD handle_data_changed.
 
     DATA ls_inserted_rows TYPE zkk_products.
-    DATA: l_value TYPE zkk_products-productid.
+*    DATA: gt_table        TYPE zkk_products.
+
 
     FIELD-SYMBOLS: <lt_table> TYPE STANDARD TABLE,
                    <ls_row>   TYPE ty_table.
@@ -61,17 +70,9 @@ CLASS lcl_event_handler IMPLEMENTATION.
 
     BREAK-POINT.
 
-*    LOOP AT er_data_changed->mt_deleted_rows INTO del_row.
-*    ENDLOOP.
     LOOP AT er_data_changed->mt_deleted_rows ASSIGNING FIELD-SYMBOL(<fs_deleted_row>).
-*      er_data_changed->get_cell_value(
-*        EXPORTING
-*          i_row_id = <fs_deleted_row>-row_id
-*          i_fieldname = 'ORT01'
-*        IMPORTING
-*          e_value = l_value
-*      ).
-      l_value = <fs_deleted_row>-row_id.
+      DATA(ls_deleted_row) = gt_table[ <fs_deleted_row>-row_id ].
+      gt_deleted_rows = VALUE #( BASE gt_deleted_rows ( CORRESPONDING #( ls_deleted_row ) ) ).
     ENDLOOP.
 
     LOOP AT <lt_table> ASSIGNING <ls_row>.
@@ -116,7 +117,7 @@ MODULE status_0100 OUTPUT.
 
 
   DATA: ls_table         TYPE ty_table,
-        lt_table         TYPE STANDARD TABLE OF ty_table,
+
         ls_layout        TYPE lvc_s_layo,
         lr_event_handler TYPE REF TO lcl_event_handler.
 
@@ -133,16 +134,6 @@ MODULE status_0100 OUTPUT.
     JOIN zkk_categories ON zkk_products~scategoryid = zkk_categories~zkk_categoryid
     INTO TABLE @DATA(lt_products).
 
-*    SELECT * FROM zkk_categories
-*    FOR ALL ENTRIES IN @lt_products
-*    WHERE zkk_categoryid = @lt_products-scategoryid
-*    INTO TABLE @DATA(lt_categories).
-*
-*    SELECT * FROM zkk_suppliers
-*    FOR ALL ENTRIES IN @lt_products
-*    WHERE zkk_supplierid = @lt_products-ssupplierid
-*    INTO TABLE @DATA(lt_suppliers).
-
     LOOP AT lt_products REFERENCE INTO DATA(lr_products).
       ls_table = CORRESPONDING #( lr_products->* ).
 
@@ -158,7 +149,7 @@ MODULE status_0100 OUTPUT.
       APPEND VALUE #( fieldname = 'ZKK_CATEGORIESNAME' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
 
 
-      APPEND ls_table TO lt_table.
+      APPEND ls_table TO gt_table.
 
     ENDLOOP.
 
@@ -189,7 +180,7 @@ MODULE status_0100 OUTPUT.
         is_layout = ls_layout
         it_toolbar_excluding = lt_dis_toolbar
       CHANGING
-        it_outtab                     = lt_table         " Output Table
+        it_outtab                     = gt_table         " Output Table
         it_fieldcatalog               = lt_fieldcat      " Field Catalog
       EXCEPTIONS
         invalid_parameter_combination = 1                " Wrong Parameter
