@@ -36,6 +36,9 @@ CLASS lcl_event_handler DEFINITION.
     METHODS get_inserted_rows
       EXPORTING et_inserted_rows TYPE ty_tab_products.
 
+    METHODS get_deleted_rows
+      EXPORTING et_deleted_rows TYPE ty_tab_products.
+
   PROTECTED SECTION.
   PRIVATE SECTION.
 
@@ -68,8 +71,6 @@ CLASS lcl_event_handler IMPLEMENTATION.
 
     ASSIGN er_data_changed->mp_mod_rows->* TO <lt_table>.
 
-    BREAK-POINT.
-
     LOOP AT er_data_changed->mt_deleted_rows ASSIGNING FIELD-SYMBOL(<fs_deleted_row>).
       DATA(ls_deleted_row) = gt_table[ <fs_deleted_row>-row_id ].
       gt_deleted_rows = VALUE #( BASE gt_deleted_rows ( CORRESPONDING #( ls_deleted_row ) ) ).
@@ -96,6 +97,10 @@ CLASS lcl_event_handler IMPLEMENTATION.
     et_inserted_rows = me->gt_inserted_rows.
   ENDMETHOD.
 
+  METHOD get_deleted_rows.
+    et_deleted_rows = me->gt_deleted_rows.
+  ENDMETHOD.
+
 ENDCLASS.
 
 START-OF-SELECTION.
@@ -117,7 +122,6 @@ MODULE status_0100 OUTPUT.
 
 
   DATA: ls_table         TYPE ty_table,
-
         ls_layout        TYPE lvc_s_layo,
         lr_event_handler TYPE REF TO lcl_event_handler.
 
@@ -224,7 +228,6 @@ MODULE user_command_0100 INPUT.
             IMPORTING
                 et_inserted_rows = DATA(lt_inserted_rows)
         ).
-        BREAK-POINT.
         LOOP AT lt_inserted_rows REFERENCE INTO DATA(lr_inserted_rows).
           IF lv_max_productid = 0.
             lv_max_productid = lv_max_productid + 1.
@@ -233,6 +236,13 @@ MODULE user_command_0100 INPUT.
         ENDLOOP.
 
         MODIFY zkk_products FROM TABLE lt_inserted_rows.
+
+        lr_event_handler->get_deleted_rows(
+          IMPORTING
+            et_deleted_rows = DATA(lt_deleted_rows)
+        ).
+
+        DELETE zkk_products FROM TABLE lt_deleted_rows.
 
 
       ENDIF.
