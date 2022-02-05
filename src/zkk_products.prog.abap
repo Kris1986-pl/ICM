@@ -219,32 +219,47 @@ MODULE user_command_0100 INPUT.
     WHEN 'SAVE'.
       lr_alv->check_changed_data(
         IMPORTING
-          e_valid   = DATA(lv_valid)                 " Entries are Consistent
+          e_valid   = DATA(lv_valid)
         ).
 
       IF lv_valid IS NOT INITIAL.
-        SELECT MAX( productid ) FROM zkk_products INTO @DATA(lv_max_productid).
+
         lr_event_handler->get_inserted_rows(
             IMPORTING
                 et_inserted_rows = DATA(lt_inserted_rows)
         ).
-        LOOP AT lt_inserted_rows REFERENCE INTO DATA(lr_inserted_rows).
-          IF lv_max_productid = 0.
-            lv_max_productid = lv_max_productid + 1.
-            lr_inserted_rows->productid = lv_max_productid.
-          ENDIF.
-        ENDLOOP.
-
-        MODIFY zkk_products FROM TABLE lt_inserted_rows.
 
         lr_event_handler->get_deleted_rows(
-          IMPORTING
-            et_deleted_rows = DATA(lt_deleted_rows)
-        ).
+            IMPORTING
+              et_deleted_rows = DATA(lt_deleted_rows)
+          ).
 
-        DELETE zkk_products FROM TABLE lt_deleted_rows.
+        IF lt_inserted_rows IS NOT INITIAL.
+
+          SELECT MAX( productid ) FROM zkk_products INTO @DATA(lv_max_productid).
+
+          LOOP AT lt_inserted_rows REFERENCE INTO DATA(lr_inserted_rows).
+            IF lv_max_productid = 0.
+              lv_max_productid = lv_max_productid + 1.
+              lr_inserted_rows->productid = lv_max_productid.
+            ENDIF.
+          ENDLOOP.
+
+          MODIFY zkk_products FROM TABLE lt_inserted_rows.
 
 
+        ELSEIF lt_deleted_rows IS NOT INITIAL.
+
+          DELETE zkk_products FROM TABLE lt_deleted_rows.
+
+        ENDIF.
+
+      ENDIF.
+
+      IF sy-subrc = 0.
+        MESSAGE 'Seved' TYPE 'S'.
+      ELSE.
+        MESSAGE 'Error during save' TYPE 'E'.
       ENDIF.
   ENDCASE.
 
