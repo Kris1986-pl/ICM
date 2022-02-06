@@ -12,10 +12,12 @@ TYPES:BEGIN OF ty_table,
         scategoryid        TYPE zkk_products-scategoryid,
         squaperunit        TYPE zkk_products-squaperunit,
         sunitprice         TYPE zkk_products-sunitprice,
+        sunitsinstock      TYPE zkk_unit_in_stock,
         sunitsonorder      TYPE zkk_products-sunitsonorder,
         sreorderlevel      TYPE zkk_products-sreorderlevel,
         sdiscontinued      TYPE zkk_products-sdiscontinued,
         zkk_categoriesname TYPE zkk_categories-zkk_categoriesname,
+        zkk_companyname    TYPE zkk_suppliers-zkk_companyname,
         celltab            TYPE lvc_t_styl.
 TYPES:END OF ty_table.
 
@@ -134,8 +136,9 @@ MODULE status_0100 OUTPUT.
     DATA(lr_alv) = NEW cl_gui_alv_grid( i_parent = lr_costom_container ).
 
     SELECT productid, sproductname, scategoryid, sdiscontinued, squaperunit, sreorderlevel, ssupplierid,
-    sunitprice, sunitsonorder,  zkk_categoriesname FROM zkk_products
+    sunitprice, sunitsinstock, sunitsonorder, zkk_categoriesname, zkk_companyname FROM zkk_products
     JOIN zkk_categories ON zkk_products~scategoryid = zkk_categories~zkk_categoryid
+    JOIN zkk_suppliers ON zkk_products~ssupplierid = zkk_suppliers~zkk_supplierid
     INTO TABLE @DATA(lt_products).
 
     LOOP AT lt_products REFERENCE INTO DATA(lr_products).
@@ -149,8 +152,10 @@ MODULE status_0100 OUTPUT.
       APPEND VALUE #( fieldname = 'SREORDERLEVEL' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
       APPEND VALUE #( fieldname = 'SSUPPLIERID' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
 *      APPEND VALUE #( fieldname = 'SUNITPRICE' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.!
+      APPEND VALUE #( fieldname = 'SUNITSINSTOCK' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
       APPEND VALUE #( fieldname = 'SUNITSONORDER' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
       APPEND VALUE #( fieldname = 'ZKK_CATEGORIESNAME' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
+      APPEND VALUE #( fieldname = 'ZKK_COMPANYNAME' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
 
 
       APPEND ls_table TO gt_table.
@@ -159,11 +164,13 @@ MODULE status_0100 OUTPUT.
 
     DATA(lt_fieldcat) = VALUE lvc_t_fcat(
                                         ( fieldname = 'SPRODUCTNAME' edit = abap_true ref_table = 'ZKK_PRODUCTS' )
-                                        ( fieldname = 'SCATEGORYID' edit = abap_true ref_table = 'ZKK_PRODUCTS' )
-                                        ( fieldname = 'ZKK_CATEGORIESNAME' edit = abap_true ref_table = 'ZKK_CATEGORIES' )
-                                        ( fieldname = 'SSUPPLIERID' edit = abap_true ref_table = 'ZKK_PRODUCTS' )
+*                                        ( fieldname = 'SCATEGORYID' edit = abap_true ref_table = 'ZKK_PRODUCTS' )
+                                        ( fieldname = 'ZKK_CATEGORIESNAME' edit = abap_true coltext = 'Categories Name' )
+*                                        ( fieldname = 'SSUPPLIERID' edit = abap_true ref_table = 'ZKK_PRODUCTS' )
+                                        ( fieldname = 'ZKK_COMPANYNAME' edit = abap_true coltext = 'Company Name' )
                                         ( fieldname = 'SQUAPERUNIT' edit = abap_true ref_table = 'ZKK_PRODUCTS' )
                                         ( fieldname = 'SUNITPRICE' edit = abap_true ref_table = 'ZKK_PRODUCTS' datatype = 'DEC' )
+                                        ( fieldname = 'SUNITSINSTOCK' edit = abap_true ref_table = 'ZKK_PRODUCTS' )
                                         ( fieldname = 'SUNITSONORDER' edit = abap_true ref_table = 'ZKK_PRODUCTS' )
                                         ( fieldname = 'SREORDERLEVEL' edit = abap_true ref_table = 'ZKK_PRODUCTS' )
                                         ( fieldname = 'SDISCONTINUED' edit = abap_true ref_table = 'ZKK_PRODUCTS' )
