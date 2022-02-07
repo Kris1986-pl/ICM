@@ -4,24 +4,11 @@ Welcome to my AbapGit repository.
 
 In this repository, I would like to show my ABAP skills.
 
-## Important programs
+## Installation
 
-ZKK_FM_PRODUCTS
+1. Clone repository or dowload zip (when your server is offline).
+2. Launch zkk_load_products program to insert data to zkk_products table. 
 
-Insert data to products table using Function Modules: ZKK_ADD_PRODUCT
+## Importent programs
 
-ZKK_AVL_PRODUCTS
-
-View products using Function Modules: REUSE AVL GRID DISPLAY.
-
-This FM can update data in table.
-
-### Object section
-
-ZKK_OO_PRODUCTS
-
-View products using ZKK_CL_PRODUCTS CLASS
-
-# TODO
-
-Create CRUD using object programing.
+zkk_products: CRUD (create/read/update/delete data) in zkk_products.
