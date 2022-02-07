@@ -14,6 +14,6 @@ In this repository, I would like to show my ABAP skills.
 6. Add TARGETPATH /usr/sap/NPL/D00/work/products_data.csv,
 7. Execute zkk_load_products program to insert data to zkk_products table. 
 
-## Importent programs
+## Important programs
 
 zkk_products: CRUD (create/read/update/delete data) in zkk_products.
