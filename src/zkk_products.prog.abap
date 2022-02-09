@@ -16,7 +16,7 @@ TYPES:BEGIN OF ty_table,
         sunitsonorder      TYPE zkk_products-sunitsonorder,
         sreorderlevel      TYPE zkk_products-sreorderlevel,
         sdiscontinued      TYPE zkk_products-sdiscontinued,
-        zkk_categoriesname TYPE zkk_categories-zkk_categoriesname,
+        scategoriesname TYPE zkk_categories-scategoriesname,
         zkk_companyname    TYPE zkk_suppliers-zkk_companyname,
         celltab            TYPE lvc_t_styl.
 TYPES:END OF ty_table.
@@ -80,12 +80,12 @@ CLASS lcl_event_handler IMPLEMENTATION.
 
     LOOP AT <lt_table> ASSIGNING <ls_row>.
 
-      READ TABLE lt_categories WITH KEY zkk_categoryid = <ls_row>-scategoryid REFERENCE INTO
+      READ TABLE lt_categories WITH KEY scategoryid = <ls_row>-scategoryid REFERENCE INTO
       DATA(lr_categories).
 
 
       IF sy-subrc = 0.
-        <ls_row>-zkk_categoriesname = lr_categories->zkk_categoriesname.
+        <ls_row>-scategoriesname = lr_categories->scategoriesname.
       ENDIF.
 
       ls_inserted_rows = CORRESPONDING #( <ls_row> ).
@@ -135,9 +135,9 @@ MODULE status_0100 OUTPUT.
 
     DATA(lr_alv) = NEW cl_gui_alv_grid( i_parent = lr_costom_container ).
 
-    SELECT productid, sproductname, scategoryid, sdiscontinued, squaperunit, sreorderlevel, ssupplierid,
-    sunitprice, sunitsinstock, sunitsonorder, zkk_categoriesname, zkk_companyname FROM zkk_products
-    JOIN zkk_categories ON zkk_products~scategoryid = zkk_categories~zkk_categoryid
+    SELECT productid, sproductname, zkk_products~scategoryid, sdiscontinued, squaperunit, sreorderlevel, ssupplierid,
+    sunitprice, sunitsinstock, sunitsonorder, scategoriesname, zkk_companyname FROM zkk_products
+    JOIN zkk_categories ON zkk_products~scategoryid = zkk_categories~scategoryid
     JOIN zkk_suppliers ON zkk_products~ssupplierid = zkk_suppliers~zkk_supplierid
     INTO TABLE @DATA(lt_products).
 
@@ -154,7 +154,7 @@ MODULE status_0100 OUTPUT.
 *      APPEND VALUE #( fieldname = 'SUNITPRICE' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.!
       APPEND VALUE #( fieldname = 'SUNITSINSTOCK' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
       APPEND VALUE #( fieldname = 'SUNITSONORDER' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
-      APPEND VALUE #( fieldname = 'ZKK_CATEGORIESNAME' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
+      APPEND VALUE #( fieldname = 'SCATEGORIESNAME' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
       APPEND VALUE #( fieldname = 'ZKK_COMPANYNAME' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
 
 
@@ -165,7 +165,7 @@ MODULE status_0100 OUTPUT.
     DATA(lt_fieldcat) = VALUE lvc_t_fcat(
                                         ( fieldname = 'SPRODUCTNAME' edit = abap_true ref_table = 'ZKK_PRODUCTS' )
 *                                        ( fieldname = 'SCATEGORYID' edit = abap_true ref_table = 'ZKK_PRODUCTS' )
-                                        ( fieldname = 'ZKK_CATEGORIESNAME' edit = abap_true coltext = 'Categories Name' )
+                                        ( fieldname = 'SCATEGORIESNAME' edit = abap_true coltext = 'Categories Name' )
 *                                        ( fieldname = 'SSUPPLIERID' edit = abap_true ref_table = 'ZKK_PRODUCTS' )
                                         ( fieldname = 'ZKK_COMPANYNAME' edit = abap_true coltext = 'Company Name' )
                                         ( fieldname = 'SQUAPERUNIT' edit = abap_true ref_table = 'ZKK_PRODUCTS' )
