@@ -1,13 +1,13 @@
 *&---------------------------------------------------------------------*
-*& Report zkk_load_products
+*& Report zkk_load_categories
 *&---------------------------------------------------------------------*
 *&
 *&---------------------------------------------------------------------*
-REPORT zkk_load_products.
+REPORT zkk_load_categories.
 
 
-DATA: ls_products     TYPE zkk_str_products,
-      lt_products     TYPE zkk_tt_products,
+DATA: ls_categories     TYPE zkk_str_categories,
+      lt_categories     TYPE zkk_tt_categories,
       lt_output       TYPE table_of_strings,
       lv_rc           TYPE i,
       lt_file_table   TYPE filetable.
@@ -89,18 +89,11 @@ LOOP AT lt_output INTO data(ls_output).
 
     CHECK lt_split_dataset IS NOT INITIAL.
 
-    ls_products-productid = lt_split_dataset[ 1 ].
-    ls_products-sproductname = lt_split_dataset[ 2 ].
-    ls_products-ssupplierid = lt_split_dataset[ 3 ].
-    ls_products-scategoryid = lt_split_dataset[ 4 ].
-    ls_products-squaperunit = lt_split_dataset[ 5 ].
-    ls_products-sunitprice = lt_split_dataset[ 6 ].
-    ls_products-sunitinstock = lt_split_dataset[ 7 ].
-    ls_products-sunitsonorder = lt_split_dataset[ 8 ].
-    ls_products-sreorderlevel = lt_split_dataset[ 9 ].
-    ls_products-sdiscontinued = lt_split_dataset[ 10 ].
+    ls_categories-scategoryid = lt_split_dataset[ 1 ].
+    ls_categories-scategoriesname = lt_split_dataset[ 2 ].
+    ls_categories-sdescripion = lt_split_dataset[ 3 ].
 
-    APPEND ls_products TO lt_products.
-    MODIFY zkk_products FROM TABLE lt_products.
+    APPEND ls_categories TO lt_categories.
+    MODIFY zkk_categories FROM TABLE lt_categories.
 
 ENDLOOP.
