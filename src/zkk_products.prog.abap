@@ -137,14 +137,14 @@ MODULE status_0100 OUTPUT.
 
     SELECT productid, sproductname, zkk_products~scategoryid, sdiscontinued, squaperunit, sreorderlevel, ssupplierid,
     sunitprice, sunitsinstock, sunitsonorder, scategoriesname, zkk_companyname FROM zkk_products
-    JOIN zkk_categories ON zkk_products~scategoryid = zkk_categories~scategoryid
+    LEFT JOIN zkk_categories ON zkk_products~scategoryid = zkk_categories~scategoryid
     JOIN zkk_suppliers ON zkk_products~ssupplierid = zkk_suppliers~zkk_supplierid
     INTO TABLE @DATA(lt_products).
 
     LOOP AT lt_products REFERENCE INTO DATA(lr_products).
       ls_table = CORRESPONDING #( lr_products->* ).
 
-
+      APPEND VALUE #( fieldname = 'SCATEGORIESNAME' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
       APPEND VALUE #( fieldname = 'SCATEGORYID' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
       APPEND VALUE #( fieldname = 'SDISCONTINUED' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
       APPEND VALUE #( fieldname = 'SPRODUCTNAME' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
@@ -154,7 +154,6 @@ MODULE status_0100 OUTPUT.
 *      APPEND VALUE #( fieldname = 'SUNITPRICE' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.!
       APPEND VALUE #( fieldname = 'SUNITSINSTOCK' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
       APPEND VALUE #( fieldname = 'SUNITSONORDER' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
-      APPEND VALUE #( fieldname = 'SCATEGORIESNAME' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
       APPEND VALUE #( fieldname = 'ZKK_COMPANYNAME' style = cl_gui_alv_grid=>mc_style_disabled ) TO ls_table-celltab.
 
 
