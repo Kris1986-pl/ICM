@@ -5,6 +5,10 @@
    <MASTER_LANGUAGE>E</MASTER_LANGUAGE>
    <STARTING_FOLDER>/src/</STARTING_FOLDER>
    <FOLDER_LOGIC>PREFIX</FOLDER_LOGIC>
+   <IGNORE>
+    <item>/data/categories_data.csv</item>
+    <item>/data/products_data.csv</item>
+   </IGNORE>
   </DATA>
  </asx:values>
 </asx:abap>
