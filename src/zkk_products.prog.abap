@@ -163,9 +163,9 @@ MODULE status_0100 OUTPUT.
 
     DATA(lt_fieldcat) = VALUE lvc_t_fcat(
                                         ( fieldname = 'SPRODUCTNAME' edit = abap_true ref_table = 'ZKK_PRODUCTS' )
-*                                        ( fieldname = 'SCATEGORYID' edit = abap_true ref_table = 'ZKK_PRODUCTS' )
+                                        ( fieldname = 'SCATEGORYID' edit = abap_true ref_table = 'ZKK_PRODUCTS' )
                                         ( fieldname = 'SCATEGORIESNAME' edit = abap_true coltext = 'Categories Name' )
-*                                        ( fieldname = 'SSUPPLIERID' edit = abap_true ref_table = 'ZKK_PRODUCTS' )
+                                        ( fieldname = 'SSUPPLIERID' edit = abap_true ref_table = 'ZKK_PRODUCTS' )
                                         ( fieldname = 'ZKK_COMPANYNAME' edit = abap_true coltext = 'Company Name' )
                                         ( fieldname = 'SQUAPERUNIT' edit = abap_true ref_table = 'ZKK_PRODUCTS' )
                                         ( fieldname = 'SUNITPRICE' edit = abap_true ref_table = 'ZKK_PRODUCTS' datatype = 'DEC' )
